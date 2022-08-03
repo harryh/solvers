@@ -4,11 +4,12 @@ class Cell(val letter: Char, var neighbors: Seq[Cell] = Nil) {
   override def toString(): String = letter.toString()
 }
 
+val localDict = scala.io.Source.fromFile("dictionary.txt")
 val dictURLs = List("https://www.andrew.cmu.edu/course/15-121/dictionary.txt",
                     "https://raw.githubusercontent.com/redbo/scrabble/master/dictionary.txt")
-val dictLines = dictURLs.map(scala.io.Source.fromURL(_))
-                        .flatMap(_.getLines())
-                        .map(_.toLowerCase)
+val dictSources = localDict :: dictURLs.map(scala.io.Source.fromURL(_))
+val dictLines = dictSources.flatMap(_.getLines())
+                           .map(_.toLowerCase)
 val dict = scala.collection.immutable.TreeSet.from(dictLines)
 
 def isWordPrefix(path: Seq[Cell]): Boolean = {
